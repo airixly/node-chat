@@ -280,42 +280,5 @@ function handleData(response, data) {
             response.end();
 
     }
-//    if (type === "join" && allUsers.hasOwnProperty(id)) {
-//        clients[id] = response;
-//        changeStatus(id);
-//        getMessage(id, type);
-//    } else if (type === "history") {
-//        if (currentMsg[originId].offMsg) {
-//            contents = currentMsg[originId].offMsg[id];
-//            if (contents && contents.length > 0) {
-//                console.log(contents);
-//                sendData(response, {"type": "history", "id": id, "contents": contents});
-//                sendMsg.msg[id] = contents;
-//                sendMsg.offMsg[id] = [];
-//                currentMsg[originId].offMsg[id] = [];
-//                saveMessage(originId, currentMsg[originId], sendMsg);
-//            }
-//        }
-//    } else if (type === "msg") {
-//        sendMsg.msg[originId] = [];
-//        sendMsg.offMsg[originId] = [];
-//        content = message.content;                         //content不应为空
-//        console.log("message accept: " + content);
-//        if (clients.hasOwnProperty(id)) {
-//            sendData(clients[id], {"type": "msg", "id": originId, "content": content});
-//            sendMsg.msg[originId].push(content);
-//        } else {
-//            sendMsg.offMsg[originId].push(content);
-//        }
-//        getMessage(id, type, sendMsg);
-//    } else if (type === "status") {
-//        response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8", "Access-Control-Allow-Origin": "*"});
-//        for (var i in clients) {
-//            if (i !== id) {
-//                response.write(JSON.stringify({"type": "status", "id": i, "status": 1}));
-//            }
-//        }
-//        response.end();
-//    }
 }
 
