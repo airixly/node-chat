@@ -1,0 +1,43 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>
+Created by FontForge 20110222 at Thu May  9 07:11:09 2013
+ By root
+Copyright (C) 2012 by original authors @ fontello.com
+</metadata>
+<defs>
+<font id="emo" horiz-adv-x="364" >
+  <font-face 
+    font-family="emo"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="1000"
+    panose-1="2 0 6 3 0 0 0 0 0 0"
+    ascent="850"
+    descent="-150"
+    bbox="0 -150 1086 850"
+    underline-thickness="50"
+    underline-position="-100"
+    unicode-range="U+E034-1F304"
+  />
+<missing-glyph 
+d="M33 0v666h265v-666h-265zM66 33h199v600h-199v-600z" />
+    <glyph glyph-name=".notdef" 
+d="M33 0v666h265v-666h-265zM66 33h199v600h-199v-600z" />
+    <glyph glyph-name=".null" horiz-adv-x="0" 
+ />
+    <glyph glyph-name="nonmarkingreturn" horiz-adv-x="333" 
+ />
+    <glyph glyph-name="uniE034" unicode="&#xe034;" horiz-adv-x="1000" 
+d="M146 704q146 146 354 146t354 -146t146 -354t-146 -354t-354 -146t-354 146t-146 354t146 354zM762 88v524h-524v-524h524zM682 334q0 -76 -53 -128.5t-129 -52.5t-129 52.5t-53 128.5h364zM354 455q0 23 16.5 40t39.5 17t40 -17t17 -40t-17 -39.5t-40 -16.5t-39.5 16.5
+t-16.5 39.5zM529 455q0 23 17 40t40 17t40 -17t17 -40t-17 -39.5t-40 -16.5t-40 16.5t-17 39.5z" />
+    <glyph glyph-name="uniE779" unicode="&#xe779;" horiz-adv-x="959" 
+d="M943 -79q-30 0 -104.5 4.5t-108.5 4.5q-54 0 -75 -1l-112 -6l-32 -1q0 20 2 44l73 15q36 8 41 15q4 5 4 13q0 9 -3 18q-26 63 -78 191l-251 1q-14 -31 -58 -153q-13 -35 -13 -47q0 -17 10 -24q15 -12 57 -18q8 0 26 -3.5t21 -3.5q0 -5 0.5 -15.5t0.5 -16.5q0 -7 -2 -15
+q-29 0 -194 11l-27 -5q-48 -8 -93 -8h-12l1 45q9 4 45 10q48 8 59 15t29 40q96 250 288 748h72q25 -55 70 -161.5t50 -118.5q36 -86 65 -157.5t58 -139.5q8 -18 33 -81t40 -94q12 -27 19 -31q13 -11 39 -13q25 -3 57 -15q4 -30 4 -32q0 -3 -0.5 -8t-0.5 -7zM325 287
+q110 -2 181 -2l16 1q-44 133 -102 252z" />
+    <glyph glyph-name="u1F304" unicode="&#x1f304;" horiz-adv-x="1101" 
+d="M104 -79q-37 0 -63 26.5t-26 63.5v678q0 37 26 63.5t63 26.5h893q37 0 63 -26.5t26 -63.5v-678q0 -37 -26 -63.5t-63 -26.5h-893zM86 11q0 -7 5 -12.5t13 -5.5h893q7 0 12.5 5.5t5.5 12.5v678q0 7 -5.5 12.5t-12.5 5.5h-893q-8 0 -13 -5.5t-5 -12.5v-678zM158 171
+l178 179l90 -89l285 285l233 -232v-250h-786v107zM158 529q0 44 31.5 75.5t75.5 31.5t75.5 -31.5t31.5 -75.5t-31.5 -76t-75.5 -32t-75.5 32t-31.5 76z" />
+  </font>
+</defs></svg>
