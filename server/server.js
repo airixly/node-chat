@@ -124,10 +124,11 @@ function FlashSocket() {
         });
     }).listen(8843, function () {
             flashFlag = true;
-            console.log((new Date()) + "Flash Server is listening on port 8843");
+            console.log((new Date()) + "Flash Socket is listening on port 8843");
         });
 }
 function xhrPolling(res, args) {
+    console.log(new Date() + "XhrPolling request accepted.");
     sendData = function (response, message) {
         response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8", "Access-Control-Allow-Origin": "*"});   //long polling
         response.end(JSON.stringify(message));
@@ -275,6 +276,8 @@ function handleData(response, data) {
             for (var i in clients) {
                 if (i !== id) {
                     response.write(JSON.stringify({"type": "status", "id": i, "status": 1}));
+                } else {
+                    response.write(JSON.stringify({"type": "status"}));
                 }
             }
             response.end();

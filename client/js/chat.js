@@ -1,8 +1,18 @@
 $(function () {
-    var socket = io.onConnect("127.0.0.1", "8081"), currentId, currentName, receivedMsg = {};
+    var socket, currentId, currentName, receivedMsg = {};
+    $.ajax({
+        url: "http://127.0.0.1:8081",
+        type: "get",
+        data: {"type": "queryId"},
+        async: false,
+        success: function (data) {
+            currentId = data ? data : "";
+        }
+    });
+    socket = io.onConnect("127.0.0.1", "8081");
     socket.onOpen = function () {
         socket.send(JSON.stringify({"type": "join", "id": currentId}));
-    }
+    };
     socket.onMessage = function (message) {
         var response = JSON.parse(message), type = response.type, respId = response.id;
         var userList, user, state;
@@ -41,7 +51,7 @@ $(function () {
                 createBubble(respId, response.contents);
                 break;
         }
-    }
+    };
     $("textarea").keypress(function (e) {
         var textarea = $(this), content, receiver = $("li.selected").attr("id");
         if (e.which === 13) {
@@ -94,20 +104,4 @@ $(function () {
             $("#message-area").append(template);
         }
     }
-
-    (function getId() {
-//        var isFirefox = typeof InstallTrigger !== 'undefined';
-//        var isChrome = !!window.chrome;
-//        var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
-//        return isFirefox ? "id_1" : (isChrome ? "id_2" : (isSafari ? "id_3" : "ms"));
-        $.ajax({
-            url: "http://127.0.0.1:8081",
-            type: "get",
-            data: {"type": "queryId"},
-            async: false,
-            success: function (data) {
-                currentId = data ? data : "";
-            }
-        })
-    })();
 });

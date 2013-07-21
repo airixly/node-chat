@@ -54,15 +54,18 @@ var io = {};
         io.send = function (data) {
             var xhrpolling = createXHR();
             xhrpolling.onreadystatechange = function () {
+                var messageType = JSON.parse(data).type;
                 if (xhrpolling.readyState == 4 && xhrpolling.responseText) {
                     io.onMessage(xhrpolling.responseText);
-                    if (JSON.parse(data).type === "join") {
-                        io.send(data.replace('"type":"join"', '"type":"status"'));
-                    }
-                    if (JSON.parse(data).type !== "status") {
-                        setTimeout(function () {
-                            io.send(data);
-                        }, 10000);
+                    switch (messageType) {
+                        case "join":
+                            io.send(data.replace('"type":"join"', '"type":"status"'));
+                            break;
+                        case "status":
+                            setTimeout(function () {
+                                io.send(data);
+                            }, 1000);
+
                     }
                 }
             }
@@ -117,14 +120,15 @@ var io = {};
     }
 
     function socketSupport() {
-        window.WebSocket = window.WebSocket || window.MozWebSocket;
-        if (window.WebSocket) {
-            return "webSocket";
-        } else if (swfobject.hasFlashPlayerVersion("10.0.0")) {
-            return "flashSocket";
-        } else {
-            return "xhrPolling";
-        }
+//        window.WebSocket = window.WebSocket || window.MozWebSocket;
+//        if (window.WebSocket) {
+//            return "webSocket";
+//        } else if (swfobject.hasFlashPlayerVersion("10.0.0")) {
+//            return "flashSocket";
+//        } else {
+//            return "xhrPolling";
+//        }
+        return "xhrPolling";
     }
 
     function getSwfUrl() {
