@@ -120,15 +120,15 @@ var io = {};
     }
 
     function socketSupport() {
-//        window.WebSocket = window.WebSocket || window.MozWebSocket;
-//        if (window.WebSocket) {
-//            return "webSocket";
-//        } else if (swfobject.hasFlashPlayerVersion("10.0.0")) {
-//            return "flashSocket";
-//        } else {
-//            return "xhrPolling";
-//        }
-        return "xhrPolling";
+       window.WebSocket = window.WebSocket || window.MozWebSocket;
+       if (window.WebSocket) {
+           return "webSocket";
+       } else if (swfobject.hasFlashPlayerVersion("10.0.0")) {
+           return "flashSocket";
+       } else {
+           return "xhrPolling";
+       }
+        // return "xhrPolling";
     }
 
     function getSwfUrl() {
