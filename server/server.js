@@ -221,6 +221,7 @@ function init(id, serviceMsg) {
     }
     initMsg = {"type": "join", "count": count, "details": details, "users": allUsers};
     sendData(clients[id], initMsg);
+    console.log(id + " has joined the server.");
 }
 
 //通知其他在线用户改变当前用户的在线状态
@@ -236,7 +237,8 @@ function changeStatus(id) {
 
 //处理客户端数据
 function handleData(response, data) {
-    var sendMsg = {msg: {}, offMsg: {}}, content, contents = [], message = JSON.parse(data), type = message.type, id = message.id, originId = message.sender;
+    var sendMsg = {msg: {}, offMsg: {}}, content, contents = [], message = JSON.parse(data),
+        type = message.type, id = message.id, originId = message.sender, statusArray = [];
     switch (type) {
         case "join":
             if (allUsers.hasOwnProperty(id)) {
@@ -275,12 +277,10 @@ function handleData(response, data) {
             response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8", "Access-Control-Allow-Origin": "*"});
             for (var i in clients) {
                 if (i !== id) {
-                    response.write(JSON.stringify({"type": "status", "id": i, "status": 1}));
-                } else {
-                    response.write(JSON.stringify({"type": "status"}));
+                    statusArray.push(JSON.stringify({"type": "status", "id": i, "status": 1}));
                 }
             }
-            response.end();
+            response.end(JSON.stringify(statusArray));
 
     }
 }

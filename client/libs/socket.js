@@ -54,9 +54,16 @@ var io = {};
         io.send = function (data) {
             var xhrpolling = createXHR();
             xhrpolling.onreadystatechange = function () {
-                var messageType = JSON.parse(data).type;
-                if (xhrpolling.readyState == 4 && xhrpolling.responseText) {
-                    io.onMessage(xhrpolling.responseText);
+                var messageType = JSON.parse(data).type, reMessage, i;
+                if (xhrpolling.readyState == 4 && xhrpolling.responseText.length > 0) {
+                    reMessage = JSON.parse(xhrpolling.responseText);
+                    if (Array.isArray(reMessage)) {
+                        for (i = 0; i < reMessage.length; i++) {
+                            io.onMessage(reMessage[i]);
+                        }
+                    } else {
+                        io.onMessage(JSON.stringify(reMessage));
+                    }
                     switch (messageType) {
                         case "join":
                             io.send(data.replace('"type":"join"', '"type":"status"'));
@@ -64,7 +71,7 @@ var io = {};
                         case "status":
                             setTimeout(function () {
                                 io.send(data);
-                            }, 1000);
+                            }, 10000);
 
                     }
                 }
@@ -120,15 +127,15 @@ var io = {};
     }
 
     function socketSupport() {
-       window.WebSocket = window.WebSocket || window.MozWebSocket;
-       if (window.WebSocket) {
-           return "webSocket";
-       } else if (swfobject.hasFlashPlayerVersion("10.0.0")) {
-           return "flashSocket";
-       } else {
-           return "xhrPolling";
-       }
-        // return "xhrPolling";
+        window.WebSocket = window.WebSocket || window.MozWebSocket;
+//       if (window.WebSocket) {
+//           return "webSocket";
+//       } else if (swfobject.hasFlashPlayerVersion("10.0.0")) {
+//           return "flashSocket";
+//       } else {
+//           return "xhrPolling";
+//       }
+        return "xhrPolling";
     }
 
     function getSwfUrl() {
