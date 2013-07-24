@@ -1,6 +1,7 @@
 var WebSocketServer = require('websocket').server, http = require('http'), net = require('net'), url = require('url');
 
-var clients = {}, allUsers = {}, allId = [], allMsg, currentMsg = {}, sendData, websocketFlag = false, flashFlag = false;
+var clients = {}, allUsers = {}, allId = [], allMsg, currentMsg = {}, onlineMsg = {}
+    , sendData, websocketFlag = false, flashFlag = false;
 
 //调用V6服务读取所有用户列表,并在本地维护
 (function getAllUser() {
@@ -41,6 +42,11 @@ var clients = {}, allUsers = {}, allId = [], allMsg, currentMsg = {}, sendData, 
         }
     };
     allId = ["id_1", "id_2", "id_3"];
+    onlineMsg = {
+        "id_1": {},
+        "id_2": {},
+        "id_3": {}
+    }
 })();
 
 //监听客户端,创建socket对象
@@ -131,7 +137,7 @@ function xhrPolling(res, args) {
     console.log(new Date() + "XhrPolling request accepted.");
     sendData = function (response, message) {
         response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8", "Access-Control-Allow-Origin": "*"});   //long polling
-        response.end(JSON.stringify(message));
+        response.write(JSON.stringify(message));
     }
     handleData(res, args);
 }
@@ -245,6 +251,9 @@ function handleData(response, data) {
                 clients[id] = response;
                 changeStatus(id);
                 getMessage(id, type);
+
+                //only for xhrpolling
+                response.end();
             }
             break;
         case "msg":
@@ -255,15 +264,26 @@ function handleData(response, data) {
             if (clients.hasOwnProperty(id)) {
                 sendData(clients[id], {"type": "msg", "id": originId, "content": content});
                 sendMsg.msg[originId].push(content);
+
+                //only for xhrpolling
+                var onlineMessage = onlineMsg[id];
+                if (onlineMessage[originId]) {
+                    onlineMessage[originId].push(content);
+                } else {
+                    onlineMessage[originId] = [content];
+                }
+
             } else {
                 sendMsg.offMsg[originId].push(content);
             }
             getMessage(id, type, sendMsg);
             break;
         case "history":
+            var endFlag = false;
             if (currentMsg[originId].offMsg) {
                 contents = currentMsg[originId].offMsg[id];
                 if (contents && contents.length > 0) {
+                    endFlag = true;
                     console.log(contents);
                     sendData(response, {"type": "history", "id": id, "contents": contents});
                     sendMsg.msg[id] = contents;
@@ -271,6 +291,18 @@ function handleData(response, data) {
                     currentMsg[originId].offMsg[id] = [];
                     saveMessage(originId, currentMsg[originId], sendMsg);
                 }
+            }
+
+            //only for xhrpolling
+            var onlineHistory = onlineMsg[originId];
+            if (onlineHistory[id] && onlineHistory[id].length !== 0) {
+                endFlag = true;
+                sendData(response, {"type": "msg", "id": id, "content": onlineHistory[id]})
+            }
+            if (endFlag) {
+                response.end();
+            } else {
+                response.end(JSON.stringify({"type": "msg"}));
             }
             break;
         case "status":

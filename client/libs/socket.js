@@ -69,9 +69,9 @@ var io = {};
                             io.send(data.replace('"type":"join"', '"type":"status"'));
                             break;
                         case "status":
-                            setTimeout(function () {
-                                io.send(data);
-                            }, 10000);
+//                            setTimeout(function () {
+//                                io.send(data);
+//                            }, 10000);
                             break;
                         case "msg":
                             break;
