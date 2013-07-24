@@ -72,7 +72,14 @@ var io = {};
                             setTimeout(function () {
                                 io.send(data);
                             }, 10000);
-
+                            break;
+                        case "msg":
+                            break;
+                        case "history":
+                            setTimeout(function () {
+                                io.send(data);
+                            }, 10000);
+                            break;
                     }
                 }
             }
