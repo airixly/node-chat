@@ -298,10 +298,12 @@ function handleData(response, data) {
             if (onlineHistory[id] && onlineHistory[id].length !== 0) {
                 endFlag = true;
                 sendData(response, {"type": "msg", "id": id, "content": onlineHistory[id]})
+                onlineMsg[originId][id] = [];
             }
             if (endFlag) {
                 response.end();
             } else {
+                response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8", "Access-Control-Allow-Origin": "*"});
                 response.end(JSON.stringify({"type": "msg"}));
             }
             break;
