@@ -69,16 +69,17 @@ var io = {};
                             io.send(data.replace('"type":"join"', '"type":"status"'));
                             break;
                         case "status":
-//                            setTimeout(function () {
-//                                io.send(data);
-//                            }, 10000);
+                           setTimeout(function () {
+                               io.send(data);
+                           }, 10000);
                             break;
                         case "msg":
+                        //wait for completion
                             break;
                         case "history":
                             setTimeout(function () {
                                 io.send(data);
-                            }, 10000);
+                            }, 5000);
                             break;
                     }
                 }
@@ -135,14 +136,14 @@ var io = {};
 
     function socketSupport() {
         window.WebSocket = window.WebSocket || window.MozWebSocket;
-//       if (window.WebSocket) {
-//           return "webSocket";
-//       } else if (swfobject.hasFlashPlayerVersion("10.0.0")) {
-//           return "flashSocket";
-//       } else {
-//           return "xhrPolling";
-//       }
-        return "xhrPolling";
+      if (window.WebSocket) {
+          return "webSocket";
+      } else if (swfobject.hasFlashPlayerVersion("10.0.0")) {
+          return "flashSocket";
+      } else {
+          return "xhrPolling";
+      }
+        // return "xhrPolling";
     }
 
     function getSwfUrl() {
@@ -150,9 +151,9 @@ var io = {};
         for (i = 0; i < scripts.length; i++) {
             matches = scripts[i].src.match(/(.*)socket\.js$/);
             if (matches) {
-                return matches[1] + "flash/mySocket.swf";
+                return matches[1] + "flash/chatSocket.swf";
             }
         }
-        return "mySocket.swf";
+        return "chatSocket.swf";
     }
 })();
