@@ -26,8 +26,8 @@ var clients = {}, allUsers = {}, allId = [], allMsg, currentMsg = {}, onlineMsg 
                 "id_3": []
             },
             "offMsg": {
-                "id_2": ["id2_hi", "I'm id_2"],
-                "id_3": ["id3_hello", "I'm id_3"]
+                "id_2": ["id2_first", "id2_second"],
+                "id_3": ["id3_first", "id3_second"]
             }
         },
         "id_2": {
@@ -36,8 +36,8 @@ var clients = {}, allUsers = {}, allId = [], allMsg, currentMsg = {}, onlineMsg 
                 "id_3": []
             },
             "offMsg": {
-                "id_1": ["id1_test", "this is id_1"],
-                "id_3": ["id3_hello", "I'm id_3"]
+                "id_1": ["id1_first", "id1_second"],
+                "id_3": ["id3_first", "id3_second"]
             }
         }
     };
@@ -134,12 +134,43 @@ function FlashSocket() {
         });
 }
 function xhrPolling(res, args) {
-    console.log(new Date() + "XhrPolling request accepted.");
+    var i, data = JSON.parse(args), id = data.id, originId = data.sender, state, statusArray = [], onlineMessage = onlineMsg[id], onlineHistory, xhrHistory = [];
     sendData = function (response, message) {
         response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8", "Access-Control-Allow-Origin": "*"});   //long polling
-        response.write(JSON.stringify(message));
+        response.end(JSON.stringify(message));
     }
-    handleData(res, args);
+    switch (data.type) {
+        case "status":
+            clients[id].heartBeat = Date.now();
+            for (i in clients) {
+                if (i !== id) {
+                    state = (clients[id].heartBeat - clients[i].heartBeat) > 15000 ? 0 : 1;
+                    statusArray.push(JSON.stringify({"type": "status", "id": i, "status": state}));
+                    if (!state) {
+                        delete clients[i];
+                        console.log(id + " has been closed");
+                    }
+                }
+            }
+            sendData(res, statusArray);
+            break;
+        case "msg":
+            sendData(res, "");
+            if (onlineMessage[originId]) {
+                onlineMessage[originId].push(data.content);
+            } else {
+                onlineMessage[originId] = [data.content];
+            }
+            break;
+        case "history":
+            onlineHistory = onlineMsg[originId];
+            if (onlineHistory[id] && onlineHistory[id].length !== 0) {
+                xhrHistory.push(JSON.stringify({"type": "msg", "id": id, "content": onlineHistory[id]}));
+                onlineHistory[id] = [];
+            }
+            break;
+    }
+    handleData(res, args, xhrHistory);
 }
 
 function WS() {
@@ -150,13 +181,13 @@ function WS() {
 //开始监听连接请求
     wsServer.on('request', function (req) {
 
-        var connection = req.accept(null, req.origin), info = {};
+        var connection = req.accept(null, req.origin);
         console.log((new Date()) + "Websocket Connection accepted.");
 
 //监听客户端消息
         connection.on('message', function (message) {
             if (message.type === 'utf8') {
-                handleData(connection, message.utf8Data, info);
+                handleData(connection, message.utf8Data);
             }
         });
 
@@ -242,18 +273,15 @@ function changeStatus(id) {
 }
 
 //处理客户端数据
-function handleData(response, data) {
+function handleData(response, data, xhrHistory) {
     var sendMsg = {msg: {}, offMsg: {}}, content, contents = [], message = JSON.parse(data),
-        type = message.type, id = message.id, originId = message.sender, statusArray = [];
+        type = message.type, id = message.id, originId = message.sender;
     switch (type) {
         case "join":
             if (allUsers.hasOwnProperty(id)) {
                 clients[id] = response;
                 changeStatus(id);
                 getMessage(id, type);
-
-                //only for xhrpolling
-                response.end();
             }
             break;
         case "msg":
@@ -264,58 +292,32 @@ function handleData(response, data) {
             if (clients.hasOwnProperty(id)) {
                 sendData(clients[id], {"type": "msg", "id": originId, "content": content});
                 sendMsg.msg[originId].push(content);
-
-                //only for xhrpolling
-                var onlineMessage = onlineMsg[id];
-                if (onlineMessage[originId]) {
-                    onlineMessage[originId].push(content);
-                } else {
-                    onlineMessage[originId] = [content];
-                }
-
             } else {
                 sendMsg.offMsg[originId].push(content);
             }
             getMessage(id, type, sendMsg);
             break;
         case "history":
-            var endFlag = false;
             if (currentMsg[originId].offMsg) {
                 contents = currentMsg[originId].offMsg[id];
                 if (contents && contents.length > 0) {
-                    endFlag = true;
-                    console.log(contents);
-                    sendData(response, {"type": "history", "id": id, "contents": contents});
+                    console.log("history output: " + contents);
                     sendMsg.msg[id] = contents;
                     sendMsg.offMsg[id] = [];
                     currentMsg[originId].offMsg[id] = [];
                     saveMessage(originId, currentMsg[originId], sendMsg);
+                    if (xhrHistory) {
+                        xhrHistory.unshift(JSON.stringify({"type": "history", "id": id, "contents": contents}));
+                    } else {
+                        sendData(response, {"type": "history", "id": id, "contents": contents});
+                    }
+
                 }
             }
-
-            //only for xhrpolling
-            var onlineHistory = onlineMsg[originId];
-            if (onlineHistory[id] && onlineHistory[id].length !== 0) {
-                endFlag = true;
-                sendData(response, {"type": "msg", "id": id, "content": onlineHistory[id]})
-                onlineMsg[originId][id] = [];
-            }
-            if (endFlag) {
-                response.end();
-            } else {
-                response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8", "Access-Control-Allow-Origin": "*"});
-                response.end(JSON.stringify({"type": "msg"}));
+            if (xhrHistory) {
+                sendData(response, xhrHistory);
             }
             break;
-        case "status":
-            response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8", "Access-Control-Allow-Origin": "*"});
-            for (var i in clients) {
-                if (i !== id) {
-                    statusArray.push(JSON.stringify({"type": "status", "id": i, "status": 1}));
-                }
-            }
-            response.end(JSON.stringify(statusArray));
-
     }
 }
 

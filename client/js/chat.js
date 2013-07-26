@@ -91,7 +91,7 @@ $(function () {
     function createBubble(id, contents) {
         var content, template, type, i, name = $("li.user-contact[id=" + id + "]").find("span.user-name").text();
         name = (id === currentId) ? currentName : name;
-        for (i = contents.length - 1; i > -1; i--) {
+        for (i = 0; i < contents.length; i++) {
             content = contents[i];
             template = $("<li class='separate-line'></li><li class='bubble'><div class='avatar'></div><div class='message-content'><span></span></div></li>");
             type = (id === currentId) ? "right" : "left";

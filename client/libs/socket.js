@@ -69,12 +69,9 @@ var io = {};
                             io.send(data.replace('"type":"join"', '"type":"status"'));
                             break;
                         case "status":
-                           setTimeout(function () {
-                               io.send(data);
-                           }, 10000);
-                            break;
-                        case "msg":
-                        //wait for completion
+                            setTimeout(function () {
+                                io.send(data);
+                            }, 10000);
                             break;
                         case "history":
                             setTimeout(function () {
@@ -129,6 +126,7 @@ var io = {};
                     return new ActiveXObject("Microsoft.XMLHTTP");
                 }
                 catch (e) {
+                    return null;
                 }
             }
         }
@@ -136,14 +134,14 @@ var io = {};
 
     function socketSupport() {
         window.WebSocket = window.WebSocket || window.MozWebSocket;
-      if (window.WebSocket) {
-          return "webSocket";
-      } else if (swfobject.hasFlashPlayerVersion("10.0.0")) {
-          return "flashSocket";
-      } else {
-          return "xhrPolling";
-      }
-        // return "xhrPolling";
+        if (window.WebSocket) {
+            return "webSocket";
+        } else if (swfobject.hasFlashPlayerVersion("10.0.0")) {
+            return "flashSocket";
+        } else {
+            return "xhrPolling";
+        }
+//        return "webSocket";
     }
 
     function getSwfUrl() {
