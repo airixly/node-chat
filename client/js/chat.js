@@ -14,8 +14,8 @@ $(function () {
         socket.send(JSON.stringify({"type": "join", "id": currentId}));
     };
     socket.onMessage = function (message) {
-        var response = JSON.parse(message), type = response.type, respId = response.id;
-        var userList, user, state;
+        var response = JSON.parse(message), type = response.type, respId = response.id,
+            userList, user, state, isHistory = true;
         switch (type) {
             case "join":
                 userList = response.users;
@@ -47,16 +47,17 @@ $(function () {
                     }
                     break;
                 }
+                isHistory = false;
             case "history":
-                createBubble(respId, response.contents);
+                createBubble(respId, response.contents, isHistory);
                 break;
         }
     };
     $("textarea").keypress(function (e) {
         var textarea = $(this), content, receiver = $("li.selected").attr("id");
         if (e.which === 13) {
-            if (receiver) {
-                content = textarea.val();
+            content = textarea.val();
+            if (receiver && content.length > 0) {
                 createBubble(currentId, [content]);
                 socket.send(JSON.stringify({"type": "msg", "id": receiver, "content": content, "sender": currentId}));
                 textarea.val('').focus();
@@ -78,7 +79,7 @@ $(function () {
             if (sender !== $("#user-list li.selected")) {
                 $("#message-area li").remove();
                 if (receivedMsg.hasOwnProperty(senderId)) {
-                    createBubble(senderId, receivedMsg[senderId]);
+                    createBubble(senderId, receivedMsg[senderId], true);
                 }
                 $("#user-list li,div.dot").removeClass("selected");
                 sender.addClass("selected");
@@ -88,10 +89,10 @@ $(function () {
         }).appendTo("#user-list ul");
     }
 
-    function createBubble(id, contents) {
+    function createBubble(id, contents, isHistory) {
         var content, template, type, i, name = $("li.user-contact[id=" + id + "]").find("span.user-name").text();
         name = (id === currentId) ? currentName : name;
-        for (i = 0; i < contents.length; i++) {
+        for (i = contents.length - 1; i > -1; i--) {
             content = contents[i];
             template = $("<li class='separate-line'></li><li class='bubble'><div class='avatar'></div><div class='message-content'><span></span></div></li>");
             type = (id === currentId) ? "right" : "left";
@@ -101,7 +102,11 @@ $(function () {
             if (content.length > 60) {
                 template.children(".message-content").width(500);
             }
-            $("#message-area").append(template);
+            if (isHistory) {
+                $("#message-area").prepend(template);
+            } else {
+                $("#message-area").append(template);
+            }
         }
     }
 });
