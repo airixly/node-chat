@@ -134,7 +134,7 @@ function FlashSocket() {
         });
 }
 function xhrPolling(res, args) {
-    var i, data = JSON.parse(args), id = data.id, originId = data.sender, state, statusArray = [], onlineMessage = onlineMsg[id], onlineHistory, xhrHistory = [];
+    var i, j,data = JSON.parse(args), id = data.id, originId = data.sender, state, statusArray = [], onlineMessage = onlineMsg[id], onlineHistory, xhrHistory = [];
     sendData = function (response, message) {
         response.writeHead(200, {"Content-Type": "text/plain;charset=utf-8", "Access-Control-Allow-Origin": "*"});   //long polling
         response.end(JSON.stringify(message));
@@ -164,8 +164,10 @@ function xhrPolling(res, args) {
             break;
         case "history":
             onlineHistory = onlineMsg[originId];
-            if (onlineHistory[id] && onlineHistory[id].length !== 0) {
-                xhrHistory.push(JSON.stringify({"type": "msg", "id": id, "content": onlineHistory[id]}));
+            if (onlineHistory[id]) {
+                for (j = 0; j < onlineHistory[id].length; j++) {
+                    xhrHistory.push(JSON.stringify({"type": "msg", "id": id, "content": onlineHistory[id][j]}));
+                }
                 onlineHistory[id] = [];
             }
             break;

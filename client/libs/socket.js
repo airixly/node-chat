@@ -141,7 +141,6 @@ var io = {};
         } else {
             return "xhrPolling";
         }
-//        return "webSocket";
     }
 
     function getSwfUrl() {
