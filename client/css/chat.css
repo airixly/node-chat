@@ -12,7 +12,7 @@ textarea {
   border: 0;
 }
 body {
-  background: royalblue;
+  background: #c2c2c2;
 }
 #conversation {
   position: relative;
@@ -43,7 +43,7 @@ body {
 }
 #user-find {
   height: 22px;
-  background: #b6bfc8;
+  background: #615F5F;
   padding: 6px 0;
   border-bottom: 1px groove #cecece;
 }
@@ -58,7 +58,7 @@ body {
   float: left;
   height: 490px;
   width: 210px;
-  background: lightsteelblue;
+  background: #615F5F;
   -webkit-border-bottom-left-radius: 8px;
   -moz-border-radius-bottomleft: 8px;
   border-bottom-left-radius: 8px;
