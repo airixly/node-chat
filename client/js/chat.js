@@ -1,5 +1,7 @@
 $(function () {
     var socket, currentId, currentName, receivedMsg = {};
+
+    //get user id for client
     $.ajax({
         url: "http://127.0.0.1:8081",
         type: "get",
@@ -9,10 +11,14 @@ $(function () {
             currentId = data ? data : "";
         }
     });
+
+    //connect to server
     socket = io.onConnect("127.0.0.1", "8081");
     socket.onOpen = function () {
         socket.send(JSON.stringify({"type": "join", "id": currentId}));
     };
+
+    //handle received message from server
     socket.onMessage = function (message) {
         var response = JSON.parse(message), type = response.type, respId = response.id,
             userList, user, state, isHistory = true;
@@ -53,6 +59,8 @@ $(function () {
                 break;
         }
     };
+
+    //enter button triggers the event to send message to other user
     $("textarea").keypress(function (e) {
         var textarea = $(this), content, receiver = $("li.selected").attr("id");
         if (e.which === 13) {
@@ -74,6 +82,8 @@ $(function () {
         template.find("span.user-name").text(name);
         template.find("span.dot").text(state);
         template.children("div.avatar").addClass(name);
+
+        //when click the user list,querying history message from server
         template.bind("click",function () {
             var sender = $(this), senderId = sender.attr("id");
             if (sender !== $("#user-list li.selected")) {

@@ -1,8 +1,3 @@
-/**
- * newSocket.js
- * Copyright (c) 2013 Youngfriend Inc.
- * All rights reserved.
- */
 var io = {};
 (function () {
     io.onConnect = function (host, port) {
@@ -31,6 +26,7 @@ var io = {};
         document.body.appendChild(flashContent);
         handler = function (e) {
             if (e.success) {
+                //detect if flash had finish loading
                 setTimeout(function () {
                     if (typeof e.ref.PercentLoaded !== "undefined" && e.ref.PercentLoaded()) {
                         var loadCheck = setInterval(function () {
@@ -66,14 +62,17 @@ var io = {};
                     }
                     switch (messageType) {
                         case "join":
+                            //after join the server,check other users' status
                             io.send(data.replace('"type":"join"', '"type":"status"'));
                             break;
                         case "status":
+                            //detect other users' status every 10 second
                             setTimeout(function () {
                                 io.send(data);
                             }, 10000);
                             break;
                         case "history":
+                            //detect if current user received new message every 5 second
                             setTimeout(function () {
                                 io.send(data);
                             }, 5000);
@@ -88,7 +87,7 @@ var io = {};
         io.onOpen();
     }
 
-
+    //notify the server to create corresponding socket
     function handshake(url) {
         var handshakeXHR = createXHR(), type;
         handshakeXHR.onreadystatechange = function () {
@@ -115,6 +114,7 @@ var io = {};
         handshakeXHR.send(null);
     }
 
+
     function createXHR() {
         if (window.XMLHttpRequest) { // Chrome, Mozilla, Safari,
             return new XMLHttpRequest();
@@ -132,6 +132,7 @@ var io = {};
         }
     }
 
+    //indicate the socket type the browser support
     function socketSupport() {
         window.WebSocket = window.WebSocket || window.MozWebSocket;
         if (window.WebSocket) {
@@ -143,6 +144,7 @@ var io = {};
         }
     }
 
+    //get flash file's path
     function getSwfUrl() {
         var scripts = document.getElementsByTagName("script"), i, matches;
         for (i = 0; i < scripts.length; i++) {
