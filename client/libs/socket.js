@@ -21,7 +21,8 @@ var io = {};
     }
 
     function FlashSocket() {
-        var flashContent = document.createElement("div"), flashvars = {}, params = {allowScriptAccess: "always"}, attributes = {"id": "socket", "name": "socket"}, handler;
+        var flashContent = document.createElement("div"), flashvars = {},
+        params = {allowScriptAccess: "always"}, attributes = {"id": "socket", "name": "socket"}, handler;
         flashContent.id = "flashContent";
         document.body.appendChild(flashContent);
         handler = function (e) {
@@ -66,13 +67,13 @@ var io = {};
                             io.send(data.replace('"type":"join"', '"type":"status"'));
                             break;
                         case "status":
-                            //detect other users' status every 10 second
+                            //detect other users' status every 10 seconds
                             setTimeout(function () {
                                 io.send(data);
                             }, 10000);
                             break;
                         case "history":
-                            //detect if current user received new message every 5 second
+                            //detect if current user received new message every 5 seconds
                             setTimeout(function () {
                                 io.send(data);
                             }, 5000);
