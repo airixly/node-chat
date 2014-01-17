@@ -1,7 +1,7 @@
 node-chat
 =========
 
-A simple chat demo built on [Node.js](http://nodejs.org/) which has used websocket,flash and ajax long polling.
+A simple chat demo built on [Node.js](http://nodejs.org/) which is based on websocket,flash and ajax long polling.
 
 
 Installation
@@ -35,7 +35,7 @@ Running the demo
 
 Note
 ----
-For simplicity,this demo just supports three users in the same time.In other words,you can only just open three pages in the browsers,and then chat with each other.
+For simplicity,this demo just supports three users in the same time.In other words,you can only open three pages in the browsers,and then chat with each other.
 
 The server has used the system's "843" port for flash policy,so you should use "sudo" to start the server.
 
